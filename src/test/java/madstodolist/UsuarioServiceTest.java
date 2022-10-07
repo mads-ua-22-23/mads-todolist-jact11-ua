@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 
@@ -155,5 +158,34 @@ public class UsuarioServiceTest {
         assertThat(usuario.getId()).isEqualTo(usuarioId);
         assertThat(usuario.getEmail()).isEqualTo("user@ua");
         assertThat(usuario.getNombre()).isEqualTo("Usuario Ejemplo");
+    }
+
+    //Comprueba que el método ListarUsuarios guarda bien la información de los usuarios.
+    @Test
+    public void servicioListarUsuarios(){
+
+        List<Usuario>usuarios = new ArrayList<>();
+        addUsuarioBD();
+
+        Usuario usuario =  new Usuario("user@ua");
+        usuario.setPassword("123");
+        Usuario usuario2 =  new Usuario("prueba@ua");
+        usuario2.setPassword("456");
+        Usuario usuario3 = new Usuario("prueba2@gmail");
+        usuario3.setPassword("789");
+
+        usuarios.add(usuario);
+        usuarios.add(usuario2);
+        usuarios.add(usuario3);
+
+        usuarioService.registrar(usuario2);
+        usuarioService.registrar(usuario3);
+
+        for(int i=0; i<usuarios.size(); i++){
+            assertThat(usuarios.get(i).getEmail()).isEqualTo(usuarioService.listarUsuario().get(i).getEmail());
+        }
+        for(int i=0; i<usuarios.size(); i++){
+            assertThat(usuarios.get(i).getPassword()).isEqualTo(usuarioService.listarUsuario().get(i).getPassword());
+        }
     }
 }
