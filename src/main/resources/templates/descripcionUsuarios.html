@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: head (titulo='Descripción de usuarios')"></head>
+
+<body>
+<div class="container-fluid">
+    <div class="row mt-3">
+        <div class="col">
+            <h2 th:text="'Descripción de usuario'"></h2>
+        </div>
+    </div>
+    <table class="table table-striped">
+        <tr>
+            <th>Id</th>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Fecha de nacimiento</th>
+        </tr>
+        <tr>
+            <td th:text="${usuarios.id}"></td>
+            <td th:text="${usuarios.nombre}"></td>
+            <td th:text="${usuarios.email}"></td>
+            <td th:text="${usuarios.fechaNacimiento}"></td>
+        </tr>
+    </table>
+</div>
+
+</body>
+</html>
