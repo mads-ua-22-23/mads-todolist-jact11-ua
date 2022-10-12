@@ -38,7 +38,7 @@ public class TareaWebTest {
     @MockBean
     private ManagerUserSession managerUserSession;
 
-    class DosIds {
+    public class DosIds {
         Long usuarioId;
         Long tareaId;
         public DosIds(Long usuarioId, Long tareaId) {

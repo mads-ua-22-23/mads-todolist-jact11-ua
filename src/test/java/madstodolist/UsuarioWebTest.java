@@ -1,6 +1,10 @@
 package madstodolist;
 
+import madstodolist.authentication.ManagerUserSession;
+import madstodolist.model.Tarea;
 import madstodolist.model.Usuario;
+import madstodolist.model.UsuarioRepository;
+import madstodolist.service.TareaService;
 import madstodolist.service.UsuarioService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,13 +13,18 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Collections;
+
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+
 //
 // A diferencia de los tests web de tarea, donde usábamos los datos
 // de prueba de la base de datos, aquí vamos a practicar otro enfoque:
@@ -25,12 +34,17 @@ public class UsuarioWebTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private ManagerUserSession managerUserSession;
+
     // Moqueamos el usuarioService.
     // En los tests deberemos proporcionar el valor devuelto por las llamadas
     // a los métodos de usuarioService que se van a ejecutar cuando se realicen
     // las peticiones a los endpoint.
     @MockBean
     private UsuarioService usuarioService;
+
+    private UsuarioRepository usuarioRepository;
 
     @Test
     public void servicioLoginUsuarioOK() throws Exception {
@@ -92,5 +106,4 @@ public class UsuarioWebTest {
                         .param("password","000"))
                 .andExpect(content().string(containsString("Contraseña incorrecta")));
     }
-
 }
