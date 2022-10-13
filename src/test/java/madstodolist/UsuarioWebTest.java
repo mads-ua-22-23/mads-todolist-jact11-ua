@@ -37,14 +37,14 @@ public class UsuarioWebTest {
     @Autowired
     private ManagerUserSession managerUserSession;
 
+    @Autowired UsuarioRepository usuarioRepository;
+
     // Moqueamos el usuarioService.
     // En los tests deberemos proporcionar el valor devuelto por las llamadas
     // a los métodos de usuarioService que se van a ejecutar cuando se realicen
     // las peticiones a los endpoint.
     @MockBean
     private UsuarioService usuarioService;
-
-    private UsuarioRepository usuarioRepository;
 
     @Test
     public void servicioLoginUsuarioOK() throws Exception {
