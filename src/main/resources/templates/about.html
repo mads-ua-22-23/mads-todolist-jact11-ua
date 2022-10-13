@@ -2,6 +2,26 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments :: head (titulo='Acerca de')"></head>
 
+<!-- Navbar -->
+<div class="container-fluid">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/about">ToDoList <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" th:href="@{/login}">Login</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" th:href="@{/registro}">Registro</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+<!-- Navbar -->
+
 <body>
 <div class="container-fluid">
     <div class="container-fluid">
@@ -12,7 +32,6 @@
             <li>Fecha de release: 3/10/2022</li>
         </ul>
     </div>
-
 </div>
 
 <div th:replace="fragments::javascript"/>
