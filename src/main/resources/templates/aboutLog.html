@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: head (titulo='Acerca de')"></head>
+
+<!-- Navbar -->
+<div class="container-fluid">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/about">ToDoList <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" th:href="@{/usuarios/{id}/tareas(id=${usuario.id})}">Tareas</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                       th:text="${usuario.nombre}">
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="#">Cuenta</a>
+                        <a class="dropdown-item" href="/logout" th:text="'Cerrar sesión ' + ${usuario.nombre}"></a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+<!-- Navbar -->
+
+<body>
+<div class="container-fluid">
+    <div class="container-fluid">
+        <h1>ToDoList</h1>
+        <ul>
+            <li>Desarrollada por José Antonio Cubí Torres </li>
+            <li>Versión 1.0.1</li>
+            <li>Fecha de release: 3/10/2022</li>
+        </ul>
+    </div>
+</div>
+
+<div th:replace="fragments::javascript"/>
+
+</body>
+</html>
