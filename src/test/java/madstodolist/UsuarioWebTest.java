@@ -142,4 +142,24 @@ public class UsuarioWebTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("8")));
     }
+
+    @Test
+    public void AboutMuestraNavbarconLog() throws Exception{
+
+        Usuario user = new Usuario("prueba@ua");
+        user.setId(9L);
+        user.setNombre("Prueba User");
+
+        this.managerUserSession.logearUsuario(8L);
+
+        when(managerUserSession.usuarioLogeado()).thenReturn(8L);
+        when(usuarioService.findById(8L)).thenReturn(user);
+
+        this.mockMvc.perform(get("/about"))
+                .andExpect(content().string(containsString("Prueba User")))
+                .andExpect(content().string(containsString("Tareas")));
+
+        this.managerUserSession.logout();
+
+    }
 }
