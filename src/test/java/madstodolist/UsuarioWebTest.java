@@ -11,9 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
@@ -24,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-
+@Sql(scripts="/clean-db.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 //
 // A diferencia de los tests web de tarea, donde usábamos los datos
 // de prueba de la base de datos, aquí vamos a practicar otro enfoque:
@@ -35,6 +38,7 @@ public class UsuarioWebTest {
     private MockMvc mockMvc;
 
     @Autowired
+    @MockBean
     private ManagerUserSession managerUserSession;
 
     @Autowired UsuarioRepository usuarioRepository;
@@ -105,5 +109,22 @@ public class UsuarioWebTest {
                         .param("eMail","ana.garcia@gmail.com")
                         .param("password","000"))
                 .andExpect(content().string(containsString("Contraseña incorrecta")));
+    }
+    @Test
+    public void DescripcionUsuarioTest() throws Exception{
+        Usuario user = new Usuario("prueba@ua");
+        user.setId(8L);
+        user.setNombre("Prueba User");
+
+        this.managerUserSession.logearUsuario(8L);
+
+        when(managerUserSession.usuarioLogeado()).thenReturn(8L);
+        when(usuarioService.findById(8L)).thenReturn(user);
+
+        this.mockMvc.perform(get("/registrados/8"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("8")))
+                .andExpect(content().string(containsString("Prueba User")))
+                .andExpect(content().string(containsString("prueba@ua")));
     }
 }
