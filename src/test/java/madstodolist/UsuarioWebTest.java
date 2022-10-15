@@ -113,6 +113,23 @@ public class UsuarioWebTest {
     @Test
     public void DescripcionUsuarioTest() throws Exception{
         Usuario user = new Usuario("prueba@ua");
+        user.setId(9L);
+        user.setNombre("Prueba User");
+
+        this.managerUserSession.logearUsuario(9L);
+
+        when(managerUserSession.usuarioLogeado()).thenReturn(9L);
+        when(usuarioService.findById(9L)).thenReturn(user);
+
+        this.mockMvc.perform(get("/registrados/9"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("9")))
+                .andExpect(content().string(containsString("Prueba User")))
+                .andExpect(content().string(containsString("prueba@ua")));
+    }
+    @Test
+    public void ListadoUsuariosTest() throws Exception{
+        Usuario user = new Usuario("prueba@ua");
         user.setId(8L);
         user.setNombre("Prueba User");
 
@@ -121,10 +138,8 @@ public class UsuarioWebTest {
         when(managerUserSession.usuarioLogeado()).thenReturn(8L);
         when(usuarioService.findById(8L)).thenReturn(user);
 
-        this.mockMvc.perform(get("/registrados/8"))
+        this.mockMvc.perform(get("/registrados"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("8")))
-                .andExpect(content().string(containsString("Prueba User")))
-                .andExpect(content().string(containsString("prueba@ua")));
+                .andExpect(content().string(containsString("8")));
     }
 }
