@@ -80,9 +80,13 @@ public class LoginController {
         usuario.setPassword(registroData.getPassword());
         usuario.setFechaNacimiento(registroData.getFechaNacimiento());
         usuario.setNombre(registroData.getNombre());
+        usuario.setAdmin(registroData.isAdmin());
 
         usuarioService.registrar(usuario);
-        return "redirect:/login";
+        if(usuario.isAdmin())
+            return "redirect:/registrados";
+        else
+            return "redirect:/login";
    }
 
    @GetMapping("/logout")

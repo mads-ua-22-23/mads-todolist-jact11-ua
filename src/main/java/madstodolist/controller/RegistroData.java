@@ -10,6 +10,17 @@ public class RegistroData {
     private String eMail;
     private String password;
     private String nombre;
+
+    private boolean admin;
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
+    }
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date fechaNacimiento;
 
@@ -40,6 +51,7 @@ public class RegistroData {
     public Date getFechaNacimiento() {
         return fechaNacimiento;
     }
+
 
     public void setFechaNacimiento(Date fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
