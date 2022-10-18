@@ -1,21 +1,33 @@
 package madstodolist;
 
+import madstodolist.authentication.ManagerUserSession;
+import madstodolist.model.Tarea;
 import madstodolist.model.Usuario;
+import madstodolist.model.UsuarioRepository;
+import madstodolist.service.TareaService;
 import madstodolist.service.UsuarioService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Sql(scripts="/clean-db.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 //
 // A diferencia de los tests web de tarea, donde usábamos los datos
 // de prueba de la base de datos, aquí vamos a practicar otro enfoque:
@@ -24,6 +36,12 @@ public class UsuarioWebTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    @MockBean
+    private ManagerUserSession managerUserSession;
+
+    @Autowired UsuarioRepository usuarioRepository;
 
     // Moqueamos el usuarioService.
     // En los tests deberemos proporcionar el valor devuelto por las llamadas
@@ -91,5 +109,57 @@ public class UsuarioWebTest {
                         .param("eMail","ana.garcia@gmail.com")
                         .param("password","000"))
                 .andExpect(content().string(containsString("Contraseña incorrecta")));
+    }
+    @Test
+    public void DescripcionUsuarioTest() throws Exception{
+        Usuario user = new Usuario("prueba@ua");
+        user.setId(9L);
+        user.setNombre("Prueba User");
+
+        this.managerUserSession.logearUsuario(9L);
+
+        when(managerUserSession.usuarioLogeado()).thenReturn(9L);
+        when(usuarioService.findById(9L)).thenReturn(user);
+
+        this.mockMvc.perform(get("/registrados/9"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("9")))
+                .andExpect(content().string(containsString("Prueba User")))
+                .andExpect(content().string(containsString("prueba@ua")));
+    }
+    @Test
+    public void ListadoUsuariosTest() throws Exception{
+        Usuario user = new Usuario("prueba@ua");
+        user.setId(8L);
+        user.setNombre("Prueba User");
+
+        this.managerUserSession.logearUsuario(8L);
+
+        when(managerUserSession.usuarioLogeado()).thenReturn(8L);
+        when(usuarioService.findById(8L)).thenReturn(user);
+
+        this.mockMvc.perform(get("/registrados"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("8")));
+    }
+
+    @Test
+    public void AboutMuestraNavbarconLog() throws Exception{
+
+        Usuario user = new Usuario("prueba@ua");
+        user.setId(9L);
+        user.setNombre("Prueba User");
+
+        this.managerUserSession.logearUsuario(8L);
+
+        when(managerUserSession.usuarioLogeado()).thenReturn(8L);
+        when(usuarioService.findById(8L)).thenReturn(user);
+
+        this.mockMvc.perform(get("/about"))
+                .andExpect(content().string(containsString("Prueba User")))
+                .andExpect(content().string(containsString("Tareas")));
+
+        this.managerUserSession.logout();
+
     }
 }

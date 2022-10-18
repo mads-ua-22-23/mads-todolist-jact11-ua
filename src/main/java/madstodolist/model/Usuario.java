@@ -21,6 +21,16 @@ public class Usuario implements Serializable {
     private String email;
     private String nombre;
     private String password;
+    private boolean admin;
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
+    }
+
     @Column(name = "fecha_nacimiento")
     @Temporal(TemporalType.DATE)
     private Date fechaNacimiento;
@@ -89,7 +99,6 @@ public class Usuario implements Serializable {
     public void setTareas(Set<Tarea> tareas) {
         this.tareas = tareas;
     }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
