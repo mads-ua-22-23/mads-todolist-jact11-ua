@@ -41,6 +41,7 @@ public class UsuarioTest {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         usuario.setFechaNacimiento(sdf.parse("1997-02-20"));
+        usuario.setAdmin(true);
 
         // THEN
         // los valores actualizados quedan guardados en el usuario y se
@@ -50,6 +51,7 @@ public class UsuarioTest {
         assertThat(usuario.getNombre()).isEqualTo("Juan Gutiérrez");
         assertThat(usuario.getPassword()).isEqualTo("12345678");
         assertThat(usuario.getFechaNacimiento()).isEqualTo(sdf.parse("1997-02-20"));
+        assertThat(usuario.isAdmin()).isEqualTo(true);
     }
 
     @Test
