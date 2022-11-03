@@ -2,6 +2,7 @@ package madstodolist;
 
 import madstodolist.model.Equipo;
 import madstodolist.service.EquipoService;
+import org.hibernate.LazyInitializationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,6 +11,7 @@ import org.springframework.test.context.jdbc.Sql;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 
 @SpringBootTest
@@ -44,5 +46,23 @@ public class EquipoServiceTest {
         assertThat(equipos.get(0).getNombre()).isEqualTo("Proyecto AAA");
         assertThat(equipos.get(1).getNombre()).isEqualTo("Proyecto BBB");
     }
+
+    @Test
+    public void accesoUsuariosGeneraExcepcion() {
+        // Given
+        // Un equipo en la base de datos
+        Equipo equipo = equipoService.crearEquipo("Proyecto 1");
+
+        // WHEN
+        // Se recupera el equipo
+        Equipo equipoBd = equipoService.recuperarEquipo(equipo.getId());
+
+        // THEN
+        // Se produce una excepción al intentar acceder a sus usuarios
+        assertThatThrownBy(() -> {
+            equipoBd.getUsuarios().size();
+        }).isInstanceOf(LazyInitializationException.class);
+    }
+
 }
 
