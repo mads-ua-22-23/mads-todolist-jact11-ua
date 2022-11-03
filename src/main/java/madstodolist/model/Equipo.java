@@ -10,6 +10,9 @@ import java.util.Set;
 @Table(name="equipos")
 public class Equipo implements Serializable {
     private String nombre;
+
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,6 +26,7 @@ public class Equipo implements Serializable {
     public Equipo(){}
     public Equipo(String nombre){
         this.nombre=nombre;
+
     }
     public String getNombre(){
         return nombre;
