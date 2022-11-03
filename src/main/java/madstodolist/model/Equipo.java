@@ -16,8 +16,8 @@ public class Equipo implements Serializable {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "equipo_usuario",
-        joinColumns = {@JoinColumn(name="fk_equipo")},
-        inverseJoinColumns = {@JoinColumn(name="fk_usuario")})
+            joinColumns = { @JoinColumn(name = "fk_equipo") },
+            inverseJoinColumns = {@JoinColumn(name = "fk_usuario")})
     Set<Usuario> usuarios = new HashSet<>();
 
     public Equipo(){}
@@ -36,10 +36,12 @@ public class Equipo implements Serializable {
     public void setId(Long id){
         this.id=id;
     }
-    public void addUsuario(Usuario usuario){
-        usuarios.add(usuario);
+    public void addUsuario(Usuario usuario) {
+        this.getUsuarios().add(usuario);
+        usuario.getEquipos().add(this);
     }
-    public Set<Usuario> getUsuarios(){
+
+    public Set<Usuario> getUsuarios() {
         return usuarios;
     }
 
