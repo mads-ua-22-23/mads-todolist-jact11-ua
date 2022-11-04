@@ -12,22 +12,10 @@
                     <a class="nav-link" href="/about">ToDoList <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" th:href="@{/usuarios/{id}/tareas(id=${usuario.id})}">Tareas</a>
+                    <a class="nav-link" th:href="@{/login}">Login</a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" th:href="@{/registrados}">Registrados</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" th:href="@{/equipos}">Equipos</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                       th:text="${usuario.nombre}">
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="dropdown-item" href="#">Cuenta</a>
-                        <a class="dropdown-item" href="/logout" th:text="'Cerrar sesión ' + ${usuario.nombre}"></a>
-                    </div>
+                    <a class="nav-link" th:href="@{/registro}">Registro</a>
                 </li>
             </ul>
         </div>
@@ -39,7 +27,7 @@
 <div class="container-fluid">
     <div class="row mt-3">
         <div class="col">
-            <h2 th:text="'Listado de usuarios'"></h2>
+            <h2 th:text="'Listado de equipos'"></h2>
         </div>
     </div>
 
@@ -56,11 +44,7 @@
                 <tr th:each="equipo: ${equipos}">
                     <td th:text="${equipo.id}"></td>
                     <td th:text="${equipo.nombre}"></td>
-                    <td>
-                        <a class="btn btn-primary" th:href="@{/registrados/{id}(id=${usuario.id})}">Descripcion </a>
-                    </td>
                 </tr>
-
                 </tbody>
             </table>
         </div>
