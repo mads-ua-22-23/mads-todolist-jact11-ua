@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments :: head (titulo='Acerca de')"></head>
+
+<head th:replace="fragments :: head (titulo='Lista de Usuarios')"></head>
 
 <!-- Navbar -->
 <div class="container-fluid">
@@ -15,6 +16,9 @@
                 </li>
                 <li class="nav-item active">
                     <a class="nav-link" th:href="@{/registrados}">Registrados</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" th:href="@{/equipos}">Equipos</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
@@ -31,19 +35,36 @@
 </div>
 <!-- Navbar -->
 
-<body>
+
 <div class="container-fluid">
-    <div class="container-fluid">
-        <h1>ToDoList</h1>
-        <ul>
-            <li>Desarrollada por José Antonio Cubí Torres </li>
-            <li>Versión 1.2.0-SNAPSHOT</li>
-            <li>Fecha de release: 18/10/2022</li>
-        </ul>
+    <div class="row mt-3">
+        <div class="col">
+            <h2 th:text="'Listado de usuarios'"></h2>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nombre</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="equipo: ${equipos}">
+                    <td th:text="${equipo.id}"></td>
+                    <td th:text="${equipo.nombre}"></td>
+                    <td>
+                        <a class="btn btn-primary" th:href="@{/registrados/{id}(id=${usuario.id})}">Descripcion </a>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
-
-<div th:replace="fragments::javascript"/>
-
 </body>
 </html>
