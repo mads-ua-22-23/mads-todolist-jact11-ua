@@ -57,4 +57,9 @@ public class EquipoService {
         List<Usuario>usuarios= new ArrayList<>(equipo.getUsuarios());
         return usuarios;
     }
+
+    @Transactional(readOnly = true)
+    public Equipo findById(Long equipoId) {
+        return equipoRepository.findById(equipoId).orElse(null);
+    }
 }
