@@ -95,4 +95,26 @@ public class EquipoWebTest {
                 .andExpect(content().string(containsString("NombrePrueba")))
                 .andExpect(content().string(containsString("user@ua")));
     }
+
+    @Test
+    public void getNuevoEquipoDevuelveForm() throws Exception {
+
+        Usuario usuario = new Usuario("user@ua");
+        usuario.setNombre("NombrePrueba");
+        usuario.setPassword("123");
+        usuario = usuarioService.registrar(usuario);
+
+        this.managerUserSession.logearUsuario(usuario.getId());
+        when(managerUserSession.usuarioLogeado()).thenReturn(usuario.getId());
+
+        when(managerUserSession.usuarioLogeado()).thenReturn(usuario.getId());
+        String urlPeticion="/equipos/nuevo";
+        String urlAction= "action=\"/equipos/nuevo\"";
+
+        this.mockMvc.perform(get(urlPeticion))
+                .andExpect((content().string(allOf(
+                        containsString("form method=\"post\""),
+                        containsString(urlAction)
+                ))));
+    }
 }
