@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -48,5 +49,25 @@ public class EquipoController {
         model.addAttribute("equipo", equipo);
         model.addAttribute("usuarios", allUsuarios);
         return "integrantesEquipo";
+    }
+
+    @GetMapping("/equipos/nuevo")
+    public String formNuevoEquipo(@ModelAttribute EquipoData equipoData, Model model,
+                                 HttpSession session) {
+
+        Long usuarioId=managerUserSession.usuarioLogeado();
+        Usuario usuario=usuarioService.findById(usuarioId);
+        model.addAttribute("usuario", usuario);
+        return "formCrearEquipo";
+    }
+
+    @PostMapping("/equipos/nuevo")
+    public String nuevaTarea(@ModelAttribute EquipoData equipoData, Model model, RedirectAttributes flash,
+                             HttpSession session) {
+        Long usuarioId=managerUserSession.usuarioLogeado();
+        Usuario usuario=usuarioService.findById(usuarioId);
+        model.addAttribute("usuario", usuario);
+        equipoService.crearEquipo(equipoData.getTitulo());
+        return "redirect:/equipos";
     }
 }
