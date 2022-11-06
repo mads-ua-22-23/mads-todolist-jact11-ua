@@ -20,8 +20,8 @@ import static org.junit.jupiter.params.shadow.com.univocity.parsers.conversions.
 import static org.mockito.Mockito.when;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @Sql(scripts = "/clean-db.sql", executionPhase = AFTER_TEST_METHOD)
@@ -107,7 +107,6 @@ public class EquipoWebTest {
         this.managerUserSession.logearUsuario(usuario.getId());
         when(managerUserSession.usuarioLogeado()).thenReturn(usuario.getId());
 
-        when(managerUserSession.usuarioLogeado()).thenReturn(usuario.getId());
         String urlPeticion="/equipos/nuevo";
         String urlAction= "action=\"/equipos/nuevo\"";
 
@@ -116,5 +115,27 @@ public class EquipoWebTest {
                         containsString("form method=\"post\""),
                         containsString(urlAction)
                 ))));
+    }
+
+    @Test
+    public void postNuevaTareaDevuelveRedirectYAñadeTarea() throws Exception {
+        Usuario usuario = new Usuario("user@ua");
+        usuario.setNombre("NombrePrueba");
+        usuario.setPassword("123");
+        usuario = usuarioService.registrar(usuario);
+
+        this.managerUserSession.logearUsuario(usuario.getId());
+        when(managerUserSession.usuarioLogeado()).thenReturn(usuario.getId());
+
+        String urlPost = "/equipos/nuevo";
+        String urlRedirect = "/equipos";
+
+        this.mockMvc.perform(post(urlPost)
+                        .param("titulo", "Grupo MADS"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl(urlRedirect));
+
+        this.mockMvc.perform(get(urlRedirect))
+                .andExpect((content().string(containsString("Grupo MADS"))));
     }
 }
