@@ -49,6 +49,9 @@ public class EquipoWebTest {
         user.setPassword("123");
         usuarioService.registrar(user);
 
+        this.managerUserSession.logearUsuario(user.getId());
+        when(managerUserSession.usuarioLogeado()).thenReturn(user.getId());
+
         Equipo equipo=equipoService.crearEquipo("equipoPrueba");
         equipoRepository.save(equipo);
         Equipo equipo2=equipoService.crearEquipo("pruebaEquipo");
@@ -72,6 +75,10 @@ public class EquipoWebTest {
         usuario.setNombre("NombrePrueba");
         usuario.setPassword("123");
         usuario = usuarioService.registrar(usuario);
+
+        this.managerUserSession.logearUsuario(usuario.getId());
+
+        when(managerUserSession.usuarioLogeado()).thenReturn(usuario.getId());
 
         equipoService.addUsuarioEquipo(usuario.getId(), equipo.getId());
         equipoService.addUsuarioEquipo(usuario.getId(), equipo2.getId());

@@ -1,9 +1,6 @@
 package madstodolist.service;
 
-import madstodolist.model.Equipo;
-import madstodolist.model.EquipoRepository;
-import madstodolist.model.Usuario;
-import madstodolist.model.UsuarioRepository;
+import madstodolist.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
