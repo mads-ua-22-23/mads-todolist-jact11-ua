@@ -68,17 +68,18 @@ public class EquipoController {
         return "redirect:/equipos";
     }
 
-    @PostMapping("equipos/{id}")
+    @PostMapping("/equipos/{id}")
     public String añadirUsuarioEquipo(@PathVariable(value="id") Long idEquipo, @ModelAttribute EquipoData equipoData){
         Long usuarioId=managerUserSession.usuarioLogeado();
         equipoService.addUsuarioEquipo(usuarioId, idEquipo);
         return "redirect:/equipos/" + idEquipo;
     }
 
-    @DeleteMapping("equipos/{id}")
+    @DeleteMapping("/equipos/{id}")
+    @ResponseBody
     public String borrarUsuarioEquipo(@PathVariable(value="id") Long idEquipo, @ModelAttribute EquipoData equipoData){
         Long usuarioId=managerUserSession.usuarioLogeado();
         equipoService.deleteUsuarioEquipo(usuarioId, idEquipo);
-        return "redirect:/equipos/" + idEquipo;
+        return "";
     }
 }
