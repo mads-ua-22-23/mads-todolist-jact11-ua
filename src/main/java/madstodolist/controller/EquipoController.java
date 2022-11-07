@@ -62,12 +62,19 @@ public class EquipoController {
     }
 
     @PostMapping("/equipos/nuevo")
-    public String nuevaTarea(@ModelAttribute EquipoData equipoData, Model model, RedirectAttributes flash,
+    public String nuevoEquipo(@ModelAttribute EquipoData equipoData, Model model, RedirectAttributes flash,
                              HttpSession session) {
         Long usuarioId=managerUserSession.usuarioLogeado();
         Usuario usuario=usuarioService.findById(usuarioId);
         model.addAttribute("usuario", usuario);
         equipoService.crearEquipo(equipoData.getTitulo());
         return "redirect:/equipos";
+    }
+
+    @PostMapping("equipos/{id}")
+    public String añadirUsuarioEquipo(@PathVariable(value="id") Long idEquipo, @ModelAttribute EquipoData equipoData){
+        Long usuarioId=managerUserSession.usuarioLogeado();
+        equipoService.addUsuarioEquipo(usuarioId, idEquipo);
+        return "redirect:/equipos/" + idEquipo;
     }
 }

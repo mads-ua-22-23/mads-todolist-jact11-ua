@@ -15,8 +15,6 @@ import java.util.List;
 
 @Service
 public class EquipoService {
-    Logger logger = LoggerFactory.getLogger(EquipoService.class);
-
     @Autowired
     EquipoRepository equipoRepository;
     @Autowired

@@ -43,7 +43,11 @@
     </div>
   </div>
 
-  <a class="btn btn-primary">Participar en el equipo</a>
+  <form method="post" th:action="@{/equipos/{id}(id=${equipo.id})}" th:object="${equipoData}">
+    <div class="col-6">
+      <button class="btn btn-primary" type="submit">Participar en el equipo</button>
+    </div>
+  </form>
 
   <a class="btn btn-danger btn-xs">Dejar de participar en el equipo</a>
 
