@@ -50,6 +50,7 @@ public class EquipoTest {
         assertThat(equipoDB.getNombre()).isEqualTo("Proyecto P1");
     }
 
+
     @Test
     public void comprobarIgualdadEquipos() {
         // GIVEN
@@ -102,10 +103,10 @@ public class EquipoTest {
         Equipo equipoBD = equipoRepository.findById(equipo.getId()).orElse(null);
         Usuario usuarioBD = usuarioRepository.findById(usuario.getId()).orElse(null);
 
-        assertThat(equipo.getUsuarios()).hasSize(1);
-        assertThat(equipo.getUsuarios()).contains(usuario);
-        assertThat(usuario.getEquipos()).hasSize(1);
-        assertThat(usuario.getEquipos()).contains(equipo);
+        assertThat(equipoBD.getUsuarios()).hasSize(1);
+        assertThat(equipoBD.getUsuarios()).contains(usuario);
+        assertThat(usuarioBD.getEquipos()).hasSize(1);
+        assertThat(usuarioBD.getEquipos()).contains(equipo);
     }
 
     @Test
@@ -123,4 +124,25 @@ public class EquipoTest {
         assertThat(equipos).hasSize(2);
     }
 
+    @Test
+    @Transactional
+    public void comprobarDeleteUsuario(){
+        // GIVEN
+        // Un equipo y un usuario en la BD
+        Equipo equipo = new Equipo("Proyecto 1");
+        equipoRepository.save(equipo);
+
+        Usuario usuario = new Usuario("user@ua");
+        usuarioRepository.save(usuario);
+
+        equipo.addUsuario(usuario);
+        equipo.deleteUsuario(usuario);
+        usuario.deleteEquipo(equipo);
+
+        Equipo equipoBD = equipoRepository.findById(equipo.getId()).orElse(null);
+        Usuario usuarioBD = usuarioRepository.findById(usuario.getId()).orElse(null);
+
+        assertThat(equipoBD.getUsuarios()).hasSize(0);
+        assertThat(usuarioBD.getEquipos()).hasSize(0);
+    }
 }
