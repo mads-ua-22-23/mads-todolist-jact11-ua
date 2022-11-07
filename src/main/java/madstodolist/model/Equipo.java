@@ -31,18 +31,26 @@ public class Equipo implements Serializable {
     public String getNombre(){
         return nombre;
     }
+
     public void setNombre(String nombre){
         this.nombre=nombre;
     }
+
     public Long getId(){
         return id;
     }
+
     public void setId(Long id){
         this.id=id;
     }
+
     public void addUsuario(Usuario usuario) {
         this.getUsuarios().add(usuario);
         usuario.getEquipos().add(this);
+    }
+
+    public void deleteUsuario(Usuario usuario){
+        usuarios.remove(usuario);
     }
 
     public Set<Usuario> getUsuarios() {
