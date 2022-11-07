@@ -89,6 +89,20 @@ public class EquipoServiceTest {
     }
 
     @Test
+    public void DeleteUsuarioEquipo() {
+        Equipo equipo = equipoService.crearEquipo("Proyecto 1");
+        Usuario usuario = new Usuario("user@ua");
+        usuario.setPassword("123");
+        usuario = usuarioService.registrar(usuario);
+
+        equipoService.addUsuarioEquipo(usuario.getId(), equipo.getId());
+        equipoService.deleteUsuarioEquipo(usuario.getId(), equipo.getId());
+        List<Usuario> usuarios = equipoService.usuariosEquipo(equipo.getId());
+
+        assertThat(usuarios).hasSize(0);
+    }
+
+    @Test
     public void comprobarRelacionUsuarioEquipos() {
         // GIVEN
         // Un equipo creado en la base de datos y un usuario registrado
