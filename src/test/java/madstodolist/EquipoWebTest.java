@@ -16,12 +16,11 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.jupiter.params.shadow.com.univocity.parsers.conversions.Conversions.string;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @Sql(scripts = "/clean-db.sql", executionPhase = AFTER_TEST_METHOD)
@@ -49,6 +48,9 @@ public class EquipoWebTest {
         user.setPassword("123");
         usuarioService.registrar(user);
 
+        this.managerUserSession.logearUsuario(user.getId());
+        when(managerUserSession.usuarioLogeado()).thenReturn(user.getId());
+
         Equipo equipo=equipoService.crearEquipo("equipoPrueba");
         equipoRepository.save(equipo);
         Equipo equipo2=equipoService.crearEquipo("pruebaEquipo");
@@ -73,6 +75,10 @@ public class EquipoWebTest {
         usuario.setPassword("123");
         usuario = usuarioService.registrar(usuario);
 
+        this.managerUserSession.logearUsuario(usuario.getId());
+
+        when(managerUserSession.usuarioLogeado()).thenReturn(usuario.getId());
+
         equipoService.addUsuarioEquipo(usuario.getId(), equipo.getId());
         equipoService.addUsuarioEquipo(usuario.getId(), equipo2.getId());
 
@@ -87,5 +93,72 @@ public class EquipoWebTest {
                 .andExpect(content().string(containsString("1")))
                 .andExpect(content().string(containsString("NombrePrueba")))
                 .andExpect(content().string(containsString("user@ua")));
+    }
+
+    @Test
+    public void getNuevoEquipoDevuelveForm() throws Exception {
+
+        Usuario usuario = new Usuario("user@ua");
+        usuario.setNombre("NombrePrueba");
+        usuario.setPassword("123");
+        usuario = usuarioService.registrar(usuario);
+
+        this.managerUserSession.logearUsuario(usuario.getId());
+        when(managerUserSession.usuarioLogeado()).thenReturn(usuario.getId());
+
+        String urlPeticion="/equipos/nuevo";
+        String urlAction= "action=\"/equipos/nuevo\"";
+
+        this.mockMvc.perform(get(urlPeticion))
+                .andExpect((content().string(allOf(
+                        containsString("form method=\"post\""),
+                        containsString(urlAction)
+                ))));
+    }
+
+    @Test
+    public void postNuevoEquipoDevuelveRedirectYAñadeEquipo() throws Exception {
+        Usuario usuario = new Usuario("user@ua");
+        usuario.setNombre("NombrePrueba");
+        usuario.setPassword("123");
+        usuario = usuarioService.registrar(usuario);
+
+        this.managerUserSession.logearUsuario(usuario.getId());
+        when(managerUserSession.usuarioLogeado()).thenReturn(usuario.getId());
+
+        String urlPost = "/equipos/nuevo";
+        String urlRedirect = "/equipos";
+
+        this.mockMvc.perform(post(urlPost)
+                        .param("titulo", "Grupo MADS"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl(urlRedirect));
+
+        this.mockMvc.perform(get(urlRedirect))
+                .andExpect((content().string(containsString("Grupo MADS"))));
+    }
+
+    @Test
+    public void postAñadirUsuarioEquipoDevuelveRedirectYAñadeUsuario() throws Exception{
+        Usuario usuario = new Usuario("user@ua");
+        usuario.setNombre("NombrePrueba");
+        usuario.setPassword("123");
+        usuario = usuarioService.registrar(usuario);
+        Equipo equipo=equipoService.crearEquipo("Grupo MADS");
+
+        this.managerUserSession.logearUsuario(usuario.getId());
+        when(managerUserSession.usuarioLogeado()).thenReturn(usuario.getId());
+
+        this.mockMvc.perform(get("/equipos"))
+                .andExpect((content().string(containsString(equipo.getNombre()))));
+
+        this.mockMvc.perform(post("/equipos/" + equipo.getId()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/equipos/" + equipo.getId()));
+
+        this.mockMvc.perform(get("/equipos/" + equipo.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString(usuario.getNombre())))
+                .andExpect(content().string(containsString(usuario.getEmail())));
     }
 }
