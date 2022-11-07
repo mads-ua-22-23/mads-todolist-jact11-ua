@@ -159,7 +159,6 @@ public class EquipoWebTest {
         this.mockMvc.perform(get("/equipos/" + equipo.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(usuario.getNombre())))
-                .andExpect(content().string(containsString(usuario.getEmail())))
-                .andExpect(content().string(containsString("1")));
+                .andExpect(content().string(containsString(usuario.getEmail())));
     }
 }
