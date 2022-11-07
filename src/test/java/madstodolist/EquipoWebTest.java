@@ -14,12 +14,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -149,9 +147,6 @@ public class EquipoWebTest {
         this.managerUserSession.logearUsuario(usuario.getId());
         when(managerUserSession.usuarioLogeado()).thenReturn(usuario.getId());
 
-        this.mockMvc.perform(get("/equipos"))
-                .andExpect((content().string(containsString(equipo.getNombre()))));
-
         this.mockMvc.perform(post("/equipos/" + equipo.getId()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/equipos/" + equipo.getId()));
@@ -160,5 +155,29 @@ public class EquipoWebTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(usuario.getNombre())))
                 .andExpect(content().string(containsString(usuario.getEmail())));
+    }
+
+    @Test
+    public void deleteUsuarioEquipo() throws Exception {
+        Usuario usuario = new Usuario("user@ua");
+        usuario.setNombre("NombrePrueba");
+        usuario.setPassword("123");
+        usuario = usuarioService.registrar(usuario);
+        Equipo equipo=equipoService.crearEquipo("Grupo MADS");
+
+        this.managerUserSession.logearUsuario(usuario.getId());
+        when(managerUserSession.usuarioLogeado()).thenReturn(usuario.getId());
+
+        this.mockMvc.perform(post("/equipos/" + equipo.getId()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/equipos/" + equipo.getId()));
+
+        this.mockMvc.perform(delete("/equipos/" + equipo.getId()))
+                .andExpect(status().isOk());
+
+        this.mockMvc.perform(get("/equipos" + equipo.getId()))
+                .andExpect(content().string(
+                        allOf(not(containsString(usuario.getNombre())),
+                                not(containsString(usuario.getEmail())))));
     }
 }
