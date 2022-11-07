@@ -8,10 +8,7 @@ import madstodolist.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
@@ -75,6 +72,13 @@ public class EquipoController {
     public String añadirUsuarioEquipo(@PathVariable(value="id") Long idEquipo, @ModelAttribute EquipoData equipoData){
         Long usuarioId=managerUserSession.usuarioLogeado();
         equipoService.addUsuarioEquipo(usuarioId, idEquipo);
+        return "redirect:/equipos/" + idEquipo;
+    }
+
+    @DeleteMapping("equipos/{id}")
+    public String borrarUsuarioEquipo(@PathVariable(value="id") Long idEquipo, @ModelAttribute EquipoData equipoData){
+        Long usuarioId=managerUserSession.usuarioLogeado();
+        equipoService.deleteUsuarioEquipo(usuarioId, idEquipo);
         return "redirect:/equipos/" + idEquipo;
     }
 }
