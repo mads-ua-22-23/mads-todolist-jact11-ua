@@ -117,7 +117,7 @@ public class EquipoWebTest {
     }
 
     @Test
-    public void postNuevaTareaDevuelveRedirectYAñadeTarea() throws Exception {
+    public void postNuevoEquipoDevuelveRedirectYAñadeEquipo() throws Exception {
         Usuario usuario = new Usuario("user@ua");
         usuario.setNombre("NombrePrueba");
         usuario.setPassword("123");
@@ -136,5 +136,30 @@ public class EquipoWebTest {
 
         this.mockMvc.perform(get(urlRedirect))
                 .andExpect((content().string(containsString("Grupo MADS"))));
+    }
+
+    @Test
+    public void postAñadirUsuarioEquipoDevuelveRedirectYAñadeUsuario() throws Exception{
+        Usuario usuario = new Usuario("user@ua");
+        usuario.setNombre("NombrePrueba");
+        usuario.setPassword("123");
+        usuario = usuarioService.registrar(usuario);
+        Equipo equipo=equipoService.crearEquipo("Grupo MADS");
+
+        this.managerUserSession.logearUsuario(usuario.getId());
+        when(managerUserSession.usuarioLogeado()).thenReturn(usuario.getId());
+
+        this.mockMvc.perform(get("/equipos"))
+                .andExpect((content().string(containsString(equipo.getNombre()))));
+
+        this.mockMvc.perform(post("/equipos/" + equipo.getId()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/equipos/" + equipo.getId()));
+
+        this.mockMvc.perform(get("/equipos/" + equipo.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString(usuario.getNombre())))
+                .andExpect(content().string(containsString(usuario.getEmail())))
+                .andExpect(content().string(containsString("1")));
     }
 }
