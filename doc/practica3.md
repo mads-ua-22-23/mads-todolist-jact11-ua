@@ -444,3 +444,8 @@ Una vez hecho esto, comprobamos que la información del usuario aparece en el li
 ```
 Por último, en este test nos logeamos con un usuario, creamos un equipo y marcamos dicho usuario como participante.
 Seguidamente, dejamos de ser participante con ese mismo usuario y comprobamos que la información del mismo **NO** aparece en el listado de miembros del equipo.
+
+
+### Database
+
+![](bbdd.png)
