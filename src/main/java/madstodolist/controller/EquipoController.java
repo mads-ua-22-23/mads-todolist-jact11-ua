@@ -1,6 +1,8 @@
 package madstodolist.controller;
 
 import madstodolist.authentication.ManagerUserSession;
+import madstodolist.controller.exception.EquipoNotFoundException;
+import madstodolist.controller.exception.UsuarioNotFoundException;
 import madstodolist.model.Equipo;
 import madstodolist.model.Usuario;
 import madstodolist.service.EquipoService;
@@ -9,9 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
@@ -29,6 +29,8 @@ public class EquipoController {
         Long usuarioId=0L;
         usuarioId=managerUserSession.usuarioLogeado();
         Usuario usuario=usuarioService.findById(usuarioId);
+        if(usuario==null)
+            throw new UsuarioNotFoundException();
         model.addAttribute("usuario", usuario);
         List<Equipo>allEquipos=equipoService.findAllOrderedByName();
         model.addAttribute("equipos", allEquipos);
@@ -40,8 +42,12 @@ public class EquipoController {
         Long usuarioId=0L;
         usuarioId=managerUserSession.usuarioLogeado();
         Usuario usuario=usuarioService.findById(usuarioId);
+        if(usuario==null)
+            throw new UsuarioNotFoundException();
         model.addAttribute("usuario", usuario);
         Equipo equipo=equipoService.findById(equipoId);
+        if(equipo==null)
+            throw new EquipoNotFoundException();
         List<Usuario>allUsuarios=equipoService.usuariosEquipo(equipoId);
         model.addAttribute("equipo", equipo);
         model.addAttribute("usuarios", allUsuarios);
@@ -49,20 +55,22 @@ public class EquipoController {
     }
 
     @GetMapping("/equipos/nuevo")
-    public String formNuevoEquipo(@ModelAttribute EquipoData equipoData, Model model,
-                                 HttpSession session) {
+    public String formNuevoEquipo(@ModelAttribute EquipoData equipoData, Model model){
 
         Long usuarioId=managerUserSession.usuarioLogeado();
         Usuario usuario=usuarioService.findById(usuarioId);
+        if(usuario==null)
+            throw new UsuarioNotFoundException();
         model.addAttribute("usuario", usuario);
         return "formCrearEquipo";
     }
 
     @PostMapping("/equipos/nuevo")
-    public String nuevoEquipo(@ModelAttribute EquipoData equipoData, Model model, RedirectAttributes flash,
-                             HttpSession session) {
+    public String nuevoEquipo(@ModelAttribute EquipoData equipoData, Model model) {
         Long usuarioId=managerUserSession.usuarioLogeado();
         Usuario usuario=usuarioService.findById(usuarioId);
+        if(usuario==null)
+            throw new UsuarioNotFoundException();
         model.addAttribute("usuario", usuario);
         equipoService.crearEquipo(equipoData.getTitulo());
         return "redirect:/equipos";
